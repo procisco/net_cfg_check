@@ -1,0 +1,2 @@
+vault_ansible_password: ansible@123
+vault_ansible_become_password: ansible@123
