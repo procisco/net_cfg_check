@@ -1,0 +1,8 @@
+---
+ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: cisco.ios.ios
+ansible_user: ansible
+ansible_password: ansible@123
+ansible_become: yes
+ansible_become_password: ansible@123
+ansible_become_method: enable
