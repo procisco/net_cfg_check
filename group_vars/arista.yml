@@ -1,0 +1,11 @@
+---
+ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: arista.eos.eos
+ansible_httpapi_use_ssl: yes
+ansible_httpapi_validate_certs: no
+ansible_user: ansible
+ansible_ssh_pass: ansible@123
+ansible_become: yes
+ansible_become_method: enable
+ansible_become_pass: ansible@123
+...
