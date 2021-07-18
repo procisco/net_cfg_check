@@ -11,11 +11,14 @@
         required_servers: "{{ required_servers }} + [ 'ntp server {{ item }}' ]"
       with_items: "{{ std.na.ntp_servers }}"
     
-    - name: Look at NA ntp_servers
+    - name: Parse NTP servers with NTC Templates
+      ansible.netcommon.cli_parse:
+        commmand: show ntp config
+        parser:
+          name: ansilbe.netcommon.ntc_templates
+        set_fact: ntp_config
+    
+    - name: Look at the ntp_config variable
       debug:
-        var: std.na.ntp_servers
-
-    - name: Look at required servers
-      debug:
-        var: required_servers
+        var: ntp_config
 ...
