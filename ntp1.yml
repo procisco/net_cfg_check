@@ -15,7 +15,7 @@
       ansible.netcommon.cli_parse:
         commmand: show ntp config
         parser:
-          name: ansilbe.netcommon.ntc_templates
+          name: ansilbe.netcommon.native
         set_fact: ntp_config
     
     - name: Look at the ntp_config variable
