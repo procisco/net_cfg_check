@@ -1,0 +1,17 @@
+---
+- name: In Progress - NTP Configuration Checks
+  hosts: cisco
+  gather_facts: no
+  vars:
+    required_servers: []
+
+  tasks:
+    - name: Create list of required NTP servers
+      set_fact:
+        required_servers: "{{ required_servers }} [ 'ntp server {{ item }}' ]"
+      with_items: "{{ std.na.ntp_servers }}"
+    
+    - name: Look at required servers
+      debug:
+        var: "{{ required_servers }}"
+...
