@@ -8,10 +8,14 @@
   tasks:
     - name: Create list of required NTP servers
       set_fact:
-        required_servers: "{{ required_servers }} [ 'ntp server {{ item }}' ]"
+        required_servers: "{{ required_servers }} + [ 'ntp server {{ item }}' ]"
       with_items: "{{ std.na.ntp_servers }}"
     
+    - name: Look at NA ntp_servers
+      debug:
+        var: std.na.ntp_servers
+
     - name: Look at required servers
       debug:
-        var: "{{ required_servers }}"
+        var: required_servers
 ...
