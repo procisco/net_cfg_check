@@ -14,5 +14,3 @@ pb_config_parse_exmpl.yml > from Ansible Documentation ansible.utils.cli_parse. 
 Template was modified to match CSR output.
 
 pb_config_parse_text.yml > copy of pb_config_parse_exmpl.yml, changed from command to text to parse a file.
-
-
