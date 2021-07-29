@@ -1,12 +1,12 @@
 ---
 - name: Parse Running Configuration
-  hosts: Cisco_CSR1Kv
+  hosts: Cisco_CSR1Kv, Cisco_IOSv
   gather_facts: no
 
   tasks:
     - name: Parse AAA commands
       ansible.utils.cli_parse:
-        text: "{{ lookup('file', './files/test_cfg.txt') }}"
+        text: "{{ lookup('file', './files/{{ ansible_host }}_run.cfg') }}"
         parser:
           name: ansible.utils.textfsm
           template_path: "./templates/iosxe_aaa_commands.textfsm"
