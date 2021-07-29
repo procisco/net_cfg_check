@@ -6,10 +6,10 @@
   tasks:
     - name: parse show interfaces csr1k
       ansible.utils.cli_parse:
-        text: "./files/intf_ex1.txt"
+        text: "{{ lookup('file', './files/iosxe_show_interfaces.yml') }}"
         parser:
           name: ansible.netcommon.ntc_templates
-          template_path: "./ntc-templates/ntc_templates/templates/cisco_ios_show_interfaces.textfsm"
+          command: "show interfaces"
         set_fact: interfaces
     
     - name:
