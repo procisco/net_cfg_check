@@ -1,0 +1,29 @@
+---
+- example: GigabitEthernet1 is up, line protocol is up 
+  getval: '(?P<name>\S+) is (?P<oper_state>\S+), line protocol is (?P<line_state>\S+)'
+  result:
+    "{{ name }}":
+      intf_name: "{{ name }}"
+      state:
+        operating: "{{ oper_state }}"
+        line_protocol: "{{ line_state }}"
+  shared: true
+
+- example: " Hardware is CSR vNIC, address is 0ccf.a21b.4900 (bia 0ccf.a21b.4900)"
+  getval: '\s+Hardware is (?P<hardware>\S+\s\S+), address is (?P<mac>\S+).*'
+  result:
+    "{{ name }}":
+      intf_name: "{{ name }}"
+      physical:
+        hardware: "{{ hardware }}"
+        mac_address: "{{ mac }}"
+
+- example: " Internet address is 172.20.1.30/24"
+  getval: '\s+Internet address is (?P<ip_addr>\d+\.\d+\.\d+\.\d+)/(?P<mask>\d+)'
+  result:
+    "{{ name }}":
+      intf_name: "{{ name }}"
+      logical:
+        address: "{{ ip_addr }}"
+        cidr: "{{ mask }}"
+...

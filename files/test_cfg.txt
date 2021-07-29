@@ -1,0 +1,359 @@
+!
+service nagle
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname MY-ROUTER
+!
+boot-start-marker
+boot system flash bootflash:rtr_model_os_version.bin
+boot-end-marker
+!
+!
+vrf definition INSIDE
+ description INSIDE
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition OUTSIDE
+ description OUTSIDE
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+logging snmp-authfail
+logging buffered 400000 errors
+no logging rate-limit
+no logging console
+enable secret 5 !@#$%^&*()
+!
+aaa new-model
+!
+!
+aaa group server tacacs+ CP1
+ server 192.168.1.1
+ server 192.168.2.1
+ ip tacacs source-interface Loopback0
+!
+aaa authentication login default group CP1 local-case
+aaa authentication enable default group CP1 enable
+aaa authorization config-commands
+aaa authorization commands 15 default group CP1 local 
+aaa accounting exec default start-stop group CP1
+!
+!
+!
+!
+!
+!
+aaa session-id common
+process cpu threshold type total rising 80 interval 100 falling 40 interval 100
+clock timezone PST -8 0
+clock summer-time PST recurring
+no ip source-route
+ip arp proxy disable
+!
+!
+!
+!
+!
+!
+!
+no ip bootp server
+ip name-server 192.168.3.1 192.168.4.1
+ip name-server vrf INET1 8.8.8.8 8.8.4.4
+ip domain list jk.com
+ip domain list ab.jk.com
+ip domain list ab.cd.ef.jk.com
+ip domain name ab.jk.com
+ip domain name vrf INET1 jk.com
+ip multicast-routing distributed
+ip dhcp bootp ignore
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+object-group network OG-NETWORK-ONE
+ 192.168.10.0 255.255.255.0
+!
+object-group network OG-NETWORK-ONE-GW 
+ 192.168.10.0 255.255.255.252
+!
+object-group service OG-SERVICE-HTTP 
+ tcp eq www
+ tcp eq 443
+!
+object-group service OG-SERVICE-DNS
+ udp eq domain
+!
+!
+!
+username rtrman secret 5 !@#$%^&*()
+!
+!
+!
+!
+!
+!
+!
+class-map type inspect match-any CLASS-THIS-TO-THAT-INSPECT
+ match access-group name ACL-THIS-TO-THAT-INSPECT
+class-map type inspect match-any CLASS-THIS-TO-THAT-PASS
+ match access-group name ACL-THIS-TO-THAT-PASS
+class-map type inspect match-any CLASS-THAT-TO-THIS-INSPECT
+ match access-group name ACL-THAT-TO-THIS-INSPECT
+class-map type inspect match-any CLASS-THAT-TO-THIS-PASS
+ match access-group name ACL-THAT-TO-THIS-PASS
+class-map match-any CLASS-CONTROL-QOS
+ match ip dscp cs3 
+ match ip dscp af32 
+class-map match-any CLASS-VIDEO-QOS
+ match ip dscp af41 
+ match ip dscp cs4 
+!
+policy-map type inspect POLICY-THIS-TO-THAT
+ class type inspect CLASS-THIS-TO-THAT-INSPECT
+  inspect
+ class type inspect CLASS-THIS-TO-THAT-PASS
+  pass
+ class class-default
+  drop
+policy-map type inspect POLICY-THAT-TO-THIS
+ class type inspect CLASS-THAT-TO-THIS-INSPECT
+  inspect
+ class type inspect CLASS-THAT-TO-THIS-PASS
+  pass
+ class class-default
+  drop
+policy-map type inspect POLICY-DROP
+ class class-default
+  drop
+policy-map POLICY-WAN-QOS-OUTBOUND
+ class CLASS-VIDEO-QOS
+  bandwidth 1500
+ class CLASS-CONTROL-QOS
+  bandwidth 1000
+ class class-default
+  bandwidth 7500
+!
+zone security default
+zone security OUTSIDE
+ description THE OUTSIDE
+zone security INSIDE
+ description THE INSIDE
+zone-pair security ZONE-THIS-TO-THAT source INSIDE destination OUTSIDE
+ service-policy type inspect POLICY-THIS-TO-THAT
+zone-pair security ZONE-THAT-TO-THIS source OUTSIDE destination INSIDE
+ service-policy type inspect POLICY-THAT-TO-THIS
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Loopback0
+ description RTRID
+ ip address 192.168.254.254 255.255.255.255
+!
+interface GigabitEthernet0/0/0
+ description INSIDE
+ vrf forwarding INSIDE
+ ip address 192.168.11.2 255.255.255.254
+ no ip redirects
+ no ip proxy-arp
+ ip nat inside
+ zone-member security INSIDE
+ ip ospf network point-to-point
+ load-interval 30
+ media-type rj45
+ speed 1000
+ no negotiation auto
+!
+interface GigabitEthernet0/0/1
+ description OUTSIDE
+ bandwidth 100000
+ vrf forwarding OUTSIDE
+ ip address 100.100.100.100 255.255.255.252
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ip nat outside
+ zone-member security OUTSIDE
+ umbrella out
+ load-interval 30
+ negotiation auto
+ no cdp enable
+ no lldp transmit
+ no lldp receive
+ service-policy output POLICY-WAN-QOS-OUTBOUND
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ no ip address
+ shutdown
+!
+!
+router ospf 65535
+ router-id 192.168.254.254
+ log-adjacency-changes detail
+ network 192.168.11.2 0.0.0.0 area 0.0.0.0
+ network 192.168.254.254 0.0.0.0 area 0.0.0.0
+!
+router bgp 65535
+ bgp router-id 192.168.254.254
+ bgp log-neighbor-changes
+ !
+ address-family ipv4
+  network 192.168.254.254 mask 255.255.255.255
+  network 192.168.11.2 mask 255.255.255.254
+ exit-address-family
+!
+no ip forward-protocol nd
+no ip forward-protocol udp netbios-ns
+no ip forward-protocol udp netbios-dgm
+no ip ftp passive
+no ip http server
+no ip http secure-server
+ip nat inside source route-map NAT-ROUTE-MAP interface GigabitEthernet0/0/1 vrf OUTSIDE overload
+!
+ip route vrf OUTSIDE 0.0.0.0 0.0.0.0 GigabitEthernet0/0/1 100.100.100.101 10
+!
+ip tacacs source-interface Loopback0 
+!
+ip bgp-community new-format
+ip ssh version 2
+!
+!
+ip access-list extended ACL-THIS-TO-THAT-INSPECT
+ permit object-group OG-SERVICE-HTTP object-group OG-NETWORK-ONE any
+ip access-list extended ACL-THIS-TO-THAT-PASS
+ permit object-group OG-SERVICE-DNS object-group OG-NETWORK-ONE any
+ip access-list extended ACL-THAT-TO-THIS-INSPECT
+ permit object-group OG-SERVICE-HTTP any object-group OG-NETWORK-ONE
+ip access-list extended ACL-THAT-TO-THIS-PASS
+ permit object-group OG-SERVICE-DNS any object-group OG-NETWORK-ONE
+ip access-list extended ACL-NAT-OUTSIDE
+ permit ip object-group OG-NETWORK-ONE any
+ip access-list standard ACL-VTY
+ permit 192.168.10.0 0.0.0.255 log
+!
+logging source-interface Loopback0
+logging host 192.168.1.10
+logging host 192.168.2.10
+!
+!
+route-map NAT-ROUTE-MAP permit 10 
+ match ip address ACL-NAT-OUTSIDE
+!
+!
+snmp-server community ITSACOMMUNITY
+snmp-server trap-source Loopback0
+snmp-server packetsize 1360
+snmp-server location ITSBETTERHERE
+snmp-server enable traps linkdown linkup coldstart warmstart
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps cpu threshold
+snmp-server enable traps bgp
+snmp-server host 192.168.10.20 version 2c THATSASTRING
+snmp-server host 192.168.20.20 version 2c THATSASTRING
+snmp ifmib ifindex persist
+tacacs-server host 192.168.1.1 timeout 5
+tacacs-server host 192.168.2.1 timeout 5
+tacacs-server directed-request
+tacacs-server key ITSAKEY
+!
+!
+!
+!
+!
+!
+!
+!
+banner login C
+THANKS FOR REVIEWING MY CONFIGURATION
+I HOPE YOU LIKE IT AND EVEN BETTER IF
+YOU CAN CONTRIBUTE!!!!
+
+banner motd C
+THANKS FOR REVIEWING MY CONFIGURATION
+I HOPE YOU LIKE IT AND EVEN BETTER IF
+YOU CAN CONTRIBUTE!!!!
+
+!
+line con 0
+ exec-timeout 5 0
+ transport input none
+line aux 0
+ no exec
+line vty 0 4
+ access-class ACL-VTY in vrf-also
+ exec-timeout 5 0
+ transport input ssh
+ transport output telnet ssh
+!
+ntp source Loopback0
+ntp server 192.168.10.30
+ntp server 192.168.20.30
+!
+!
+!
+!
+!
+!
+end
