@@ -51,7 +51,7 @@ aaa group server tacacs+ CP1
 aaa authentication login default group CP1 local-case
 aaa authentication enable default group CP1 enable
 aaa authorization config-commands
-aaa authorization commands 15 default group CP1 local 
+aaa authorization commands 15 default group CP1 local
 aaa accounting exec default start-stop group CP1
 !
 !
