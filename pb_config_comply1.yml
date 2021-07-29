@@ -19,8 +19,8 @@
     - name: Verify AAA Configuration
       assert:
         that:
-          - "{{ aaa_cmds.0.LOGIN_GROUP }}" == "login default group CP1 local-case"
-          - "{{ aaa_cmds.0.ENABLE_GROUP }}" == "enable default group CP1 enable"
+          - aaa_cmds.0.LOGIN_GROUP == "login default group CP1 local-case"
+          - aaa_cmds.0.ENABLE_GROUP == "enable default group CP1 enable"
         fail_msg: "AAA configuration is out of compliance"
-        success_mgs: "AAA configuration is compliant"
+        success_msg: "AAA configuration is compliant"
 ...
