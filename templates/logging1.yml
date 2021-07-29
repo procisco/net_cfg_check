@@ -1,0 +1,7 @@
+---
+- example: logging source-interface Loopback0
+  getval: 'logging source-interface (?P<src_intf>\w+\d)'
+  result:
+    "{{ src_intf }}":
+        name: "{{ src_intf }}"
+...
