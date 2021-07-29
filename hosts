@@ -2,8 +2,11 @@ all:
   children:
     cisco:
       hosts:
-        172.20.1.20:
-        172.20.1.30:
+        Cisco_IOSv:
+          ansible_host: 172.20.1.20
+        Cisco_CSR1Kv:
+          ansible_host: 172.20.1.30
     arista:
       hosts:
-        172.20.1.40:
+        Arista_EOSv:
+          ansible_host: 172.20.1.40
