@@ -1,9 +1,9 @@
 Value Required AAA_AUTHENTICATION (aaa\sauthentication)
-Value LOGIN_GROUP (\S+\s+\S+\s+\S+\s+\S+\s+\S+)
-Value ENABLE_GROUP (\S+\s+\S+\s+\S+\s+\S+\s+\S+)
+Value LOGIN_GROUP (login\sdefault\sgroup\s\S+\s\S+)
+Value ENABLE_GROUP (enable\sdefault\sgroup\s\S+\s\S+)
 Value AAA_AUTHORIZATION (aaa\sauthorization)
 Value CONFIG_COMMANDS (\S+)
-Value COMMANDS_15 (\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+)
+Value COMMANDS_15 (commands\s15\sdefault\sgroup\s\S+\s\S+)
 
 Start
   ^${AAA_AUTHENTICATION}\s+${LOGIN_GROUP}$$
