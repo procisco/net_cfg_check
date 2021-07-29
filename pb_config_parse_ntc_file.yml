@@ -1,0 +1,18 @@
+---
+- name: Parse show interfaces
+  hosts: Cisco_CSR1Kv
+  gather_facts: no
+
+  tasks:
+    - name: parse show interfaces csr1k
+      ansible.utils.cli_parse:
+        text: "./files/intf_ex1.txt"
+        parser:
+          name: ansible.netcommon.ntc_templates
+          template_path: "./ntc-templates/ntc_templates/templates/cisco_ios_show_interfaces.textfsm"
+        set_fact: interfaces
+    
+    - name:
+      debug:
+        var: interfaces
+...
