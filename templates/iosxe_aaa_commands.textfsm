@@ -1,0 +1,13 @@
+Value Required AAA_AUTHENTICATION (\S+\s\S+)
+Value LOGIN_GROUP (\S+\s+\S+\s+\S+\s+\S+\s+\S+)
+Value ENABLE_GROUP (\S+\s+\S+\s+\S+\s+\S+\s+\S+)
+Value AAA_AUTHORIZATION (S+\s\S+)
+Value CONFIG_COMMANDS (\S+)
+Value COMMANDS_15 (\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+)
+
+Start
+  ^aaa\sauthentication\slogin.+ -> Continue.Record
+  ^${AAA_AUTHENTICATION}\s+${LOGIN_GROUP}$$
+  ^${AAA_AUTHENTICATION}\s+${ENABLE_GROUP}$$
+  ^${AAA_AUTHORIZATION}\s+${CONFIG_COMMANDS}$$
+  ^${AAA_AUTHORIZATION}\s+${COMMANDS_15}$$
