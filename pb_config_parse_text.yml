@@ -1,0 +1,18 @@
+---
+- name: Parse show interfaces
+  hosts: Cisco_CSR1Kv
+  gather_facts: no
+
+  tasks:
+    - name: parse show interfaces csr1k
+      ansible.utils.cli_parse:
+        text: "{{ lookup('file', './files/iosxe_show_interfaces.yml') }}"
+        parser:
+          name: ansible.netcommon.native
+          template_path: "./templates/nxos_show_interface.yml"
+        set_fact: interfaces
+    
+    - name:
+      debug:
+        var: interfaces
+...
