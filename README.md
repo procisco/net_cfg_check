@@ -7,4 +7,5 @@ Inspired by Nicholas Leiva (https://github.com/nleiva/ansible-networking/blob/ma
 ![network diagram](net_img2.png)
 
 
-- NTP Check > Starting with Nicholas' NTP check
+### Changed direction on the approach
+- 1. Testing Ansible cli_parse with command and text parameters
