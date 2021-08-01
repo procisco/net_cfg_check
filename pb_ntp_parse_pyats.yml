@@ -1,0 +1,13 @@
+- hosts: cisco
+  connection: network_cli
+  gather_facts: no
+  roles:
+    - ansible-pyats
+  
+  tasks:
+    - pyats_parse_command:
+        command: show ntp config
+      register: output
+
+    - debug:
+        var: output.structured
