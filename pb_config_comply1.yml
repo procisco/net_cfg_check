@@ -6,7 +6,7 @@
   tasks:
     - name: Parse AAA commands
       ansible.utils.cli_parse:
-        text: "{{ lookup('file', './files/{{ ansible_host }}_run.cfg') }}"
+        text: "{{ lookup('file', './files/{{ inventory_hostname }}_run.cfg') }}"
         parser:
           name: ansible.utils.textfsm
           template_path: "./templates/iosxe_aaa_commands.textfsm"
