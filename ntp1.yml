@@ -13,7 +13,7 @@
     
     - name: Parse NTP servers with PyATS
       ansible.utils.cli_parse:
-        commmand: "show ntp config"
+        command: "show ntp config"
         parser:
           name: ansilbe.netcommon.pyats
       register: ntp_config
