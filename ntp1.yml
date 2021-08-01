@@ -16,7 +16,6 @@
         commmand: "show ntp config"
         parser:
           name: ansilbe.netcommon.pyats
-          command: show ntp config
       register: ntp_config
     
     - name: Look at the ntp_config variable
